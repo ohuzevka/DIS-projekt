@@ -13,6 +13,8 @@
  */
 void disp_init(void);
 
+void disp_set_clock1(unsigned int P1_sec);
+
 /**
  * @brief Example: Set volume on arc widget
  *

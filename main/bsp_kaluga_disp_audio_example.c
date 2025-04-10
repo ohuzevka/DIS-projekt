@@ -254,6 +254,25 @@ static void audio_task(void *arg)
     }
 }
 
+// clock tick executed every second
+void clock_tick()
+{
+    TickType_t xLastWakeTime = xTaskGetTickCount();;
+    const TickType_t xPeriod = pdMS_TO_TICKS(1000);    // clock period in ms
+
+    uint32_t P1_sec = 0;
+
+    while(1)
+    {
+        // Wait for the next cycle.
+        vTaskDelayUntil( &xLastWakeTime, xPeriod );
+
+        P1_sec++;
+        disp_set_clock1(P1_sec);
+    }
+}
+
+
 void app_main(void)
 {
     /* Init board peripherals */
@@ -280,6 +299,9 @@ void app_main(void)
 
     BaseType_t ret = xTaskCreate(audio_task, "audio_task", 4096, NULL, 6, NULL);
     assert(ret == pdPASS);
+
+    // clock tick executed every second
+    xTaskCreate(clock_tick, "clock_tick", 4096, NULL, 1, NULL);
 
     /* Init audio buttons */
     for (int i = 0; i < BSP_BUTTON_NUM; i++) {
