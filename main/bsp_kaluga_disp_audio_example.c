@@ -37,6 +37,10 @@ static led_strip_handle_t rgb_led = NULL;
 static i2s_chan_handle_t i2s_tx_chan;
 static i2s_chan_handle_t i2s_rx_chan;
 
+TaskHandle_t refresh_diaplay_handle;
+unsigned int Player1_sec = 0;
+
+
 static void btn_handler(void *arg, void *arg2)
 {
     for (uint8_t i = 0; i < BSP_BUTTON_NUM; i++) {
@@ -260,15 +264,22 @@ void clock_tick()
     TickType_t xLastWakeTime = xTaskGetTickCount();;
     const TickType_t xPeriod = pdMS_TO_TICKS(1000);    // clock period in ms
 
-    uint32_t P1_sec = 0;
-
     while(1)
     {
-        // Wait for the next cycle.
         vTaskDelayUntil( &xLastWakeTime, xPeriod );
 
-        P1_sec++;
-        disp_set_clock1(P1_sec);
+        Player1_sec++;
+        vTaskResume(refresh_diaplay_handle);
+    }
+}
+
+void refresh_display()
+{
+    while(1)
+    {
+        vTaskSuspend( NULL );   // Task suspends itself, Waits until resuming
+
+        disp_set_clock1(Player1_sec);
     }
 }
 
@@ -302,6 +313,8 @@ void app_main(void)
 
     // clock tick executed every second
     xTaskCreate(clock_tick, "clock_tick", 4096, NULL, 1, NULL);
+
+    xTaskCreate(refresh_display, "refresh display", 4096, NULL, 7, &refresh_diaplay_handle);
 
     /* Init audio buttons */
     for (int i = 0; i < BSP_BUTTON_NUM; i++) {
