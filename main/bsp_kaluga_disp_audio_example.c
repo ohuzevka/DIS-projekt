@@ -37,6 +37,7 @@ static led_strip_handle_t rgb_led = NULL;
 static i2s_chan_handle_t i2s_tx_chan;
 static i2s_chan_handle_t i2s_rx_chan;
 
+
 enum ClockStates {
     Setup,
     Pause,
@@ -47,10 +48,11 @@ enum Players { Player1, Player2 };
 
 enum ClockStates clock_state = Setup;
 enum Players active_player = Player1;
-
 TaskHandle_t refresh_diaplay_handle;
-unsigned int Player1_sec = 0;
-
+unsigned int set_time = 60;         // Starting time [s]
+unsigned int time_step = 30;        // Time to add or subtract with +/- button press [s]
+unsigned int player1_time = 0;      // Remaining time of player1 [s]
+unsigned int player2_time = 0;      // Remaining time of player2 [s]
 
 
 static void btn_handler(void *arg, void *arg2)
@@ -116,6 +118,7 @@ static esp_err_t spiffs_init(void)
     return ret;
 }
 
+// Deactivated
 static void audio_task(void *arg)
 {
     /* Create and configure ES8311 I2C driver */
@@ -280,27 +283,42 @@ void btn_actions()
     }
             
     switch (btn_index) {
-        case BSP_BUTTON_REC: {
-            clock_state = Setup;
-            break;
-        }
-        case BSP_BUTTON_MODE: {
+        case BSP_BUTTON_REC: {      // Player 2 finish turn
             
             break;
         }
-        case BSP_BUTTON_PLAY: {
+        case BSP_BUTTON_MODE: {     // Increase starting time
+            if (clock_state == Setup) {
+                set_time += time_step;
+                player1_time = set_time;
+                player2_time = set_time;
+                vTaskResume(refresh_diaplay_handle);    // Refresh display
+            }
+            break;
+        }
+        case BSP_BUTTON_PLAY: {     // Play / pause
             clock_state = Playing;
             break;
         }
-        case BSP_BUTTON_SET: {
+        case BSP_BUTTON_SET: {      // Reset to starting time
             clock_state = Setup;
+            player1_time = set_time;
+            player2_time = set_time;
+            vTaskResume(refresh_diaplay_handle);    // Refresh display
             break;
         }
-        case BSP_BUTTON_VOLDOWN: {
-            
+        case BSP_BUTTON_VOLDOWN: {  // Decrease starting time
+            if (clock_state == Setup) {
+                if (set_time - time_step != 0) {
+                    set_time -= time_step;
+                }
+                player1_time = set_time;
+                player2_time = set_time;
+                vTaskResume(refresh_diaplay_handle);    // Refresh display
+            }
             break;
         }
-        case BSP_BUTTON_VOLUP: {
+        case BSP_BUTTON_VOLUP: {    // Player 1 finish turn
             
             break;
         }
@@ -308,7 +326,6 @@ void btn_actions()
             ESP_LOGW(TAG, "Button index out of range");
     }
 }
-
 }
 
 // clock tick executed every second
@@ -317,24 +334,21 @@ void clock_tick()
     TickType_t xLastWakeTime = xTaskGetTickCount();;
     const TickType_t xPeriod = pdMS_TO_TICKS(1000);    // clock period in ms
 
-    while(1)
-    {
+    while(1) {
         vTaskDelayUntil( &xLastWakeTime, xPeriod );
 
         if (clock_state == Playing) {
-            Player1_sec++;
-            vTaskResume(refresh_diaplay_handle);
+            player1_time--;
+            vTaskResume(refresh_diaplay_handle);        // Refresh display
         }
     }
 }
 
 void refresh_display()
 {
-    while(1)
-    {
+    while(1) {
         vTaskSuspend( NULL );   // Task suspends itself, Waits until resuming
-
-        disp_set_clock1(Player1_sec);
+        disp_set_clock1(set_time, player1_time);
     }
 }
 

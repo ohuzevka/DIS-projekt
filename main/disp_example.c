@@ -27,11 +27,11 @@ void disp_init(void)
     bar_clk1 = lv_bar_create(lv_scr_act());
     lv_obj_set_size(bar_clk1, 200, 20);
     lv_obj_center(bar_clk1);
-    lv_bar_set_range(bar_clk1, 0, 100);
-    lv_bar_set_value(bar_clk1, 0, LV_ANIM_OFF);
+    lv_bar_set_range(bar_clk1, 0, 60);
+    lv_bar_set_value(bar_clk1, 60, LV_ANIM_OFF);
 
     clk1_label = lv_label_create(lv_scr_act());
-    lv_label_set_text(clk1_label, "00 : 00");
+    lv_label_set_text(clk1_label, "01 : 00");
     lv_obj_align_to(clk1_label, bar_clk1, LV_ALIGN_OUT_TOP_MID, 0, -5);
 
     // /* Volume arc */
@@ -56,7 +56,7 @@ void disp_init(void)
     bsp_display_unlock();
 }
 
-void disp_set_clock1(unsigned int P1_sec)
+void disp_set_clock1(unsigned int max_time, unsigned int P1_sec)
 {
     assert(bar_clk1);
     
@@ -64,8 +64,11 @@ void disp_set_clock1(unsigned int P1_sec)
     sprintf(str, "%02d : %02d", P1_sec/60, P1_sec%60);
     
     bsp_display_lock(0);
+
+    lv_bar_set_range(bar_clk1, 0, max_time);
     lv_bar_set_value(bar_clk1, P1_sec, LV_ANIM_OFF);
     lv_label_set_text(clk1_label, str);
+
     bsp_display_unlock();
 }
 
