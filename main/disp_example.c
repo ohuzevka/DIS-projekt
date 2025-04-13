@@ -98,6 +98,22 @@ void disp_set_clock1(unsigned int max_time, unsigned int P1_sec)
     bsp_display_unlock();
 }
 
+void disp_set_clock2(unsigned int max_time, unsigned int P2_sec)
+{
+    assert(clk2_bar);
+    
+    char str[20];
+    sprintf(str, "%02d : %02d", P2_sec/60, P2_sec%60);
+    
+    bsp_display_lock(0);
+
+    lv_bar_set_range(clk2_bar, 0, max_time);
+    lv_bar_set_value(clk2_bar, P2_sec, LV_ANIM_OFF);
+    lv_label_set_text(clk2_label, str);
+
+    bsp_display_unlock();
+}
+
 void disp_set_volume(int volume)
 {
     assert(volume_arc);

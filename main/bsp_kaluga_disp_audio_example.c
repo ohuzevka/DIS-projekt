@@ -51,8 +51,8 @@ enum Players active_player = Player1;
 TaskHandle_t refresh_diaplay_handle;
 unsigned int set_time = 60;         // Starting time [s]
 unsigned int time_step = 30;        // Time to add or subtract with +/- button press [s]
-unsigned int player1_time = 0;      // Remaining time of player1 [s]
-unsigned int player2_time = 0;      // Remaining time of player2 [s]
+unsigned int player1_time = 60;      // Remaining time of player1 [s]
+unsigned int player2_time = 60;      // Remaining time of player2 [s]
 
 
 static void btn_handler(void *arg, void *arg2)
@@ -290,6 +290,13 @@ void btn_actions()
                 player2_time = set_time;
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
+            else if (clock_state == Playing) {
+                active_player = Player1;
+            }
+            else if (clock_state == Setup) {
+                active_player = Player1;
+                clock_state = Playing;
+            }
             break;
         }
         case BSP_BUTTON_MODE: {     // Increase starting time
@@ -353,6 +360,13 @@ void btn_actions()
                 player2_time = set_time;
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
+            else if (clock_state == Playing) {
+                active_player = Player2;
+            }
+            else if (clock_state == Setup) {
+                active_player = Player2;
+                clock_state = Playing;
+            }
             break;
         }
         default:
@@ -371,9 +385,17 @@ void clock_tick()
         vTaskDelayUntil( &xLastWakeTime, xPeriod );
 
         if (clock_state == Playing) {
-            player1_time--;
-            if (player1_time == 0) {
-                clock_state = Timeout;
+            if (active_player == Player1) {
+                player1_time--;
+                if (player1_time == 0) {
+                    clock_state = Timeout;
+                }
+            }
+            else if (active_player == Player2) {
+                player2_time--;
+                if (player2_time == 0) {
+                    clock_state = Timeout;
+                }
             }
             vTaskResume(refresh_diaplay_handle);        // Refresh display
         }
@@ -385,6 +407,7 @@ void refresh_display()
     while(1) {
         vTaskSuspend( NULL );   // Task suspends itself, Waits until resuming
         disp_set_clock1(set_time, player1_time);
+        disp_set_clock2(set_time, player2_time);
     }
 }
 

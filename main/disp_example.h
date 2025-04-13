@@ -14,6 +14,7 @@
 void disp_init(void);
 
 void disp_set_clock1(unsigned int max_time, unsigned int P1_sec);
+void disp_set_clock2(unsigned int max_time, unsigned int P2_sec);
 
 /**
  * @brief Example: Set volume on arc widget
