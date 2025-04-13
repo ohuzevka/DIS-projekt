@@ -11,28 +11,54 @@
 static lv_obj_t *recording_checkbox = NULL;
 static lv_obj_t *playing_checkbox = NULL;
 static lv_obj_t *volume_arc = NULL;
-static lv_obj_t *bar_clk1 = NULL;
+static lv_obj_t *clk1_bar = NULL;
+static lv_obj_t *clk2_bar = NULL;
 static lv_obj_t *clk1_label = NULL;
+static lv_obj_t *clk2_label = NULL;
+
 
 void disp_init(void)
 {
     bsp_display_lock(0);
 
     /*Create a window*/
-    lv_obj_t *win = lv_win_create(lv_scr_act(), 70);
+    lv_obj_t *win = lv_win_create(lv_scr_act(), 30);
     assert(win);
-    lv_win_add_title(win, "Chess clock\nPlayer1:\nPlayer 2:");
+    lv_win_add_title(win, "Chess clock");
+
+    static lv_obj_t *clk1_name = NULL;
+    static lv_obj_t *clk2_name = NULL;
 
 
-    bar_clk1 = lv_bar_create(lv_scr_act());
-    lv_obj_set_size(bar_clk1, 200, 20);
-    lv_obj_center(bar_clk1);
-    lv_bar_set_range(bar_clk1, 0, 60);
-    lv_bar_set_value(bar_clk1, 60, LV_ANIM_OFF);
+    // Player 1 clock
+    clk1_bar = lv_bar_create(lv_scr_act());
+    lv_obj_set_size(clk1_bar, 200, 20);
+    lv_obj_align(clk1_bar, LV_ALIGN_CENTER, 0, -50);
+    lv_bar_set_range(clk1_bar, 0, 60);
+    lv_bar_set_value(clk1_bar, 60, LV_ANIM_OFF);
 
     clk1_label = lv_label_create(lv_scr_act());
     lv_label_set_text(clk1_label, "01 : 00");
-    lv_obj_align_to(clk1_label, bar_clk1, LV_ALIGN_OUT_TOP_MID, 0, -5);
+    lv_obj_align_to(clk1_label, clk1_bar, LV_ALIGN_OUT_TOP_MID, 0, -5);
+    
+    clk1_name = lv_label_create(lv_scr_act());
+    lv_label_set_text(clk1_name, "Player 1");
+    lv_obj_align_to(clk1_name, clk1_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
+
+    // Player 2 clock
+    clk2_bar = lv_bar_create(lv_scr_act());
+    lv_obj_set_size(clk2_bar, 200, 20);
+    lv_obj_align(clk2_bar, LV_ALIGN_CENTER, 0, 50);
+    lv_bar_set_range(clk2_bar, 0, 60);
+    lv_bar_set_value(clk2_bar, 60, LV_ANIM_OFF);
+
+    clk2_label = lv_label_create(lv_scr_act());
+    lv_label_set_text(clk2_label, "01 : 00");
+    lv_obj_align_to(clk2_label, clk2_bar, LV_ALIGN_OUT_TOP_MID, 0, -5);
+
+    clk2_name = lv_label_create(lv_scr_act());
+    lv_label_set_text(clk2_name, "Player 2");
+    lv_obj_align_to(clk2_name, clk2_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
 
     // /* Volume arc */
     // volume_arc = lv_arc_create(lv_scr_act());
@@ -58,15 +84,15 @@ void disp_init(void)
 
 void disp_set_clock1(unsigned int max_time, unsigned int P1_sec)
 {
-    assert(bar_clk1);
+    assert(clk1_bar);
     
     char str[20];
     sprintf(str, "%02d : %02d", P1_sec/60, P1_sec%60);
     
     bsp_display_lock(0);
 
-    lv_bar_set_range(bar_clk1, 0, max_time);
-    lv_bar_set_value(bar_clk1, P1_sec, LV_ANIM_OFF);
+    lv_bar_set_range(clk1_bar, 0, max_time);
+    lv_bar_set_value(clk1_bar, P1_sec, LV_ANIM_OFF);
     lv_label_set_text(clk1_label, str);
 
     bsp_display_unlock();
