@@ -284,7 +284,12 @@ void btn_actions()
             
     switch (btn_index) {
         case BSP_BUTTON_REC: {      // Player 2 finish turn
-            
+            if (clock_state == Timeout) {
+                clock_state = Setup;
+                player1_time = set_time;
+                player2_time = set_time;
+                vTaskResume(refresh_diaplay_handle);    // Refresh display
+            }
             break;
         }
         case BSP_BUTTON_MODE: {     // Increase starting time
@@ -294,10 +299,27 @@ void btn_actions()
                 player2_time = set_time;
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
+            else if (clock_state == Timeout) {
+                clock_state = Setup;
+                player1_time = set_time;
+                player2_time = set_time;
+                vTaskResume(refresh_diaplay_handle);    // Refresh display
+            }
             break;
         }
         case BSP_BUTTON_PLAY: {     // Play / pause
-            clock_state = Playing;
+            if (clock_state == Setup || clock_state == Pause) {
+                clock_state = Playing;
+            } 
+            else if (clock_state == Playing) {
+                clock_state = Pause;
+            }
+            else if (clock_state == Timeout) {
+                clock_state = Setup;
+                player1_time = set_time;
+                player2_time = set_time;
+                vTaskResume(refresh_diaplay_handle);    // Refresh display
+            }
             break;
         }
         case BSP_BUTTON_SET: {      // Reset to starting time
@@ -316,10 +338,21 @@ void btn_actions()
                 player2_time = set_time;
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
+            else if (clock_state == Timeout) {
+                clock_state = Setup;
+                player1_time = set_time;
+                player2_time = set_time;
+                vTaskResume(refresh_diaplay_handle);    // Refresh display
+            }
             break;
         }
         case BSP_BUTTON_VOLUP: {    // Player 1 finish turn
-            
+            if (clock_state == Timeout) {
+                clock_state = Setup;
+                player1_time = set_time;
+                player2_time = set_time;
+                vTaskResume(refresh_diaplay_handle);    // Refresh display
+            }
             break;
         }
         default:
@@ -339,6 +372,9 @@ void clock_tick()
 
         if (clock_state == Playing) {
             player1_time--;
+            if (player1_time == 0) {
+                clock_state = Timeout;
+            }
             vTaskResume(refresh_diaplay_handle);        // Refresh display
         }
     }
