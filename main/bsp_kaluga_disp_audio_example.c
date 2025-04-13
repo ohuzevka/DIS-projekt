@@ -37,8 +37,20 @@ static led_strip_handle_t rgb_led = NULL;
 static i2s_chan_handle_t i2s_tx_chan;
 static i2s_chan_handle_t i2s_rx_chan;
 
+enum ClockStates {
+    Setup,
+    Pause,
+    Playing,
+    Timeout
+};
+enum Players { Player1, Player2 };
+
+enum ClockStates clock_state = Setup;
+enum Players active_player = Player1;
+
 TaskHandle_t refresh_diaplay_handle;
 unsigned int Player1_sec = 0;
+
 
 
 static void btn_handler(void *arg, void *arg2)
@@ -258,6 +270,47 @@ static void audio_task(void *arg)
     }
 }
 
+void btn_actions() 
+{   
+    while (1) {
+
+    uint8_t btn_index = 0;
+    if (xQueueReceive(audio_button_q, &btn_index, portMAX_DELAY) != pdTRUE) {
+        continue;
+    }
+            
+    switch (btn_index) {
+        case BSP_BUTTON_REC: {
+            clock_state = Setup;
+            break;
+        }
+        case BSP_BUTTON_MODE: {
+            
+            break;
+        }
+        case BSP_BUTTON_PLAY: {
+            clock_state = Playing;
+            break;
+        }
+        case BSP_BUTTON_SET: {
+            clock_state = Setup;
+            break;
+        }
+        case BSP_BUTTON_VOLDOWN: {
+            
+            break;
+        }
+        case BSP_BUTTON_VOLUP: {
+            
+            break;
+        }
+        default:
+            ESP_LOGW(TAG, "Button index out of range");
+    }
+}
+
+}
+
 // clock tick executed every second
 void clock_tick()
 {
@@ -268,8 +321,10 @@ void clock_tick()
     {
         vTaskDelayUntil( &xLastWakeTime, xPeriod );
 
-        Player1_sec++;
-        vTaskResume(refresh_diaplay_handle);
+        if (clock_state == Playing) {
+            Player1_sec++;
+            vTaskResume(refresh_diaplay_handle);
+        }
     }
 }
 
@@ -308,13 +363,13 @@ void app_main(void)
     audio_button_q = xQueueCreate(10, sizeof(uint8_t));
     assert (audio_button_q != NULL);
 
-    BaseType_t ret = xTaskCreate(audio_task, "audio_task", 4096, NULL, 6, NULL);
-    assert(ret == pdPASS);
+    // BaseType_t ret = xTaskCreate(audio_task, "audio_task", 4096, NULL, 6, NULL);
+    // assert(ret == pdPASS);
 
     // clock tick executed every second
     xTaskCreate(clock_tick, "clock_tick", 4096, NULL, 1, NULL);
-
     xTaskCreate(refresh_display, "refresh display", 4096, NULL, 7, &refresh_diaplay_handle);
+    xTaskCreate(btn_actions, "btn_actions", 4096, NULL, 6, NULL);
 
     /* Init audio buttons */
     for (int i = 0; i < BSP_BUTTON_NUM; i++) {

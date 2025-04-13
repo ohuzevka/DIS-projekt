@@ -28,7 +28,7 @@ void disp_init(void)
     lv_obj_set_size(bar_clk1, 200, 20);
     lv_obj_center(bar_clk1);
     lv_bar_set_range(bar_clk1, 0, 100);
-    lv_bar_set_value(bar_clk1, 70, LV_ANIM_OFF);
+    lv_bar_set_value(bar_clk1, 0, LV_ANIM_OFF);
 
     clk1_label = lv_label_create(lv_scr_act());
     lv_label_set_text(clk1_label, "00 : 00");
