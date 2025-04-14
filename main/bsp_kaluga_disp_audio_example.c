@@ -49,8 +49,9 @@ enum Players { Player1, Player2 };
 enum ClockStates clock_state = Setup;
 enum Players active_player = Player1;
 TaskHandle_t refresh_diaplay_handle;
+TaskHandle_t play_audio_handle;
 unsigned int set_time = 60;         // Starting time [s]
-unsigned int time_step = 30;        // Time to add or subtract with +/- button press [s]
+unsigned int time_step = 10;        // Time to add or subtract with +/- button press [s]
 unsigned int player1_time = 60;      // Remaining time of player1 [s]
 unsigned int player2_time = 60;      // Remaining time of player2 [s]
 
@@ -273,6 +274,62 @@ static void audio_task(void *arg)
     }
 }
 
+void play_audio() {
+    /* Create and configure ES8311 I2C driver */
+    es8311_handle_t es8311_dev = es8311_create(BSP_I2C_NUM, ES8311_ADDRRES_0);
+    const es8311_clock_config_t clk_cfg = BSP_ES8311_SCLK_CONFIG(SAMPLE_RATE);
+    es8311_init(es8311_dev, &clk_cfg, ES8311_RESOLUTION_16, ES8311_RESOLUTION_16);
+    es8311_voice_volume_set(es8311_dev, 70, NULL);
+
+    /* Configure I2S peripheral and Power Amplifier */
+    bsp_audio_init(NULL, &i2s_tx_chan, &i2s_rx_chan);
+    bsp_audio_poweramp_enable(true);
+
+    /* Pointer to a file that is going to be played */
+    const char music_filename[] = "/spiffs/16bit_mono_22_05khz.wav";
+    const char *play_filename = music_filename;
+
+    while (1) {
+        vTaskSuspend( NULL );   // Task suspends itself, Waits until resuming
+        
+        int16_t *wav_bytes = malloc(BUFFER_SIZE);
+        assert(wav_bytes != NULL);
+
+        /* Open WAV file */
+        ESP_LOGI(TAG, "Playing file %s", play_filename);
+        FILE *play_file = fopen(play_filename, "rb");
+        if (play_file == NULL) {
+            ESP_LOGW(TAG, "%s file does not exist!", play_filename);
+            return;
+        }
+
+        /* Read WAV header file */
+        dumb_wav_header_t wav_header;
+        if (fread((void *)&wav_header, 1, sizeof(wav_header), play_file) != sizeof(wav_header)) {
+            ESP_LOGW(TAG, "Error in reading file");
+            return;
+        }
+        ESP_LOGI(TAG, "Number of channels: %d", wav_header.num_channels);
+        ESP_LOGI(TAG, "Bits per sample: %d", wav_header.bits_per_sample);
+        ESP_LOGI(TAG, "Sample rate: %d", wav_header.sample_rate);
+        ESP_LOGI(TAG, "Data size: %d", wav_header.data_size);
+
+        uint32_t bytes_send_to_i2s = 0;
+        while (bytes_send_to_i2s < wav_header.data_size) {
+            /* Get data from SPIFFS */
+            size_t bytes_read_from_spiffs = fread(wav_bytes, 1, BUFFER_SIZE, play_file);
+
+            /* Send it to I2S */
+            size_t i2s_bytes_written;
+            ESP_ERROR_CHECK(i2s_channel_write(i2s_tx_chan, wav_bytes, bytes_read_from_spiffs, &i2s_bytes_written, pdMS_TO_TICKS(500)));
+            bytes_send_to_i2s += i2s_bytes_written;
+        }
+
+        fclose(play_file);
+        free(wav_bytes);
+    }
+}
+
 void btn_actions() 
 {   
     while (1) {
@@ -389,12 +446,14 @@ void clock_tick()
                 player1_time--;
                 if (player1_time == 0) {
                     clock_state = Timeout;
+                    vTaskResume(play_audio_handle);     // Play audio
                 }
             }
             else if (active_player == Player2) {
                 player2_time--;
                 if (player2_time == 0) {
                     clock_state = Timeout;
+                    vTaskResume(play_audio_handle);     // Play audio
                 }
             }
             vTaskResume(refresh_diaplay_handle);        // Refresh display
@@ -442,6 +501,7 @@ void app_main(void)
     // clock tick executed every second
     xTaskCreate(clock_tick, "clock_tick", 4096, NULL, 1, NULL);
     xTaskCreate(refresh_display, "refresh display", 4096, NULL, 7, &refresh_diaplay_handle);
+    xTaskCreate(play_audio, "play_audio", 4096, NULL, 7, &play_audio_handle);
     xTaskCreate(btn_actions, "btn_actions", 4096, NULL, 6, NULL);
 
     /* Init audio buttons */
