@@ -470,6 +470,25 @@ void refresh_display()
     }
 }
 
+void led() {
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(100));
+
+        if (clock_state == Playing) {
+            if (active_player == Player1) {
+                led_strip_set_pixel(rgb_led, 0, 100, 0, 0);
+            }
+            else {
+                led_strip_set_pixel(rgb_led, 0, 0, 0, 100);
+            }
+        }
+        else {
+            led_strip_set_pixel(rgb_led, 0, 0, 0, 0);
+        }
+        led_strip_refresh(rgb_led);
+    }
+}
+
 
 void app_main(void)
 {
@@ -503,6 +522,7 @@ void app_main(void)
     xTaskCreate(refresh_display, "refresh display", 4096, NULL, 7, &refresh_diaplay_handle);
     xTaskCreate(play_audio, "play_audio", 4096, NULL, 7, &play_audio_handle);
     xTaskCreate(btn_actions, "btn_actions", 4096, NULL, 6, NULL);
+    xTaskCreate(led, "led", 4096, NULL, 6, NULL);
 
     /* Init audio buttons */
     for (int i = 0; i < BSP_BUTTON_NUM; i++) {
