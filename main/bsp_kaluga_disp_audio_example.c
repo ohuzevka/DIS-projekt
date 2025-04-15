@@ -27,7 +27,7 @@
 #define DEFAULT_VOLUME  (50)
 /* The recording will be RECORDING_LENGTH * BUFFER_SIZE long (in bytes)
    With sampling frequency 22050 Hz and 16bit mono resolution it equals to ~3.715 seconds */
-#define RECORDING_LENGTH (160)
+// #define RECORDING_LENGTH (160)
 
 /* Globals */
 static const char *TAG = "example";
@@ -124,7 +124,7 @@ void play_audio() {
     es8311_handle_t es8311_dev = es8311_create(BSP_I2C_NUM, ES8311_ADDRRES_0);
     const es8311_clock_config_t clk_cfg = BSP_ES8311_SCLK_CONFIG(SAMPLE_RATE);
     es8311_init(es8311_dev, &clk_cfg, ES8311_RESOLUTION_16, ES8311_RESOLUTION_16);
-    es8311_voice_volume_set(es8311_dev, 70, NULL);
+    es8311_voice_volume_set(es8311_dev, DEFAULT_VOLUME, NULL);
 
     /* Configure I2S peripheral and Power Amplifier */
     bsp_audio_init(NULL, &i2s_tx_chan, &i2s_rx_chan);
