@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: CC0-1.0
  */
-#define LV_USE_PERF_MONITOR 0
 
 #include "disp_example.h"
 #include "lvgl.h"
