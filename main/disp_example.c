@@ -60,6 +60,12 @@ void disp_init(void)
     lv_label_set_text(clk2_name, "Player 2");
     lv_obj_align_to(clk2_name, clk2_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
 
+    // buttons label
+    lv_obj_t * buttons_label = lv_label_create(lv_scr_act());
+    lv_label_set_text(buttons_label, "< P1 |  -  | Reset | Pause |  +  | P2 >");
+    lv_obj_align(buttons_label, LV_ALIGN_BOTTOM_MID, 0, -5);
+
+
     // /* Volume arc */
     // volume_arc = lv_arc_create(lv_scr_act());
     // assert(volume_arc);
