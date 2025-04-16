@@ -190,6 +190,8 @@ void btn_actions()
                 clock_state = Setup;
                 player1_time = set_time;
                 player2_time = set_time;
+                disp_set_P1_cb(false);
+                disp_set_P2_cb(false);
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
             else if (clock_state == Playing) {
@@ -197,9 +199,11 @@ void btn_actions()
                 disp_set_P1_cb(true);
                 disp_set_P2_cb(false);
             }
-            else if (clock_state == Setup) {
+            else if (clock_state == Setup || clock_state == Pause) {
                 active_player = Player1;
                 clock_state = Playing;
+                disp_set_P1_cb(true);
+                disp_set_P2_cb(false);
             }
             break;
         }
@@ -214,6 +218,8 @@ void btn_actions()
                 clock_state = Setup;
                 player1_time = set_time;
                 player2_time = set_time;
+                disp_set_P1_cb(false);
+                disp_set_P2_cb(false);
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
             break;
@@ -221,14 +227,26 @@ void btn_actions()
         case BSP_BUTTON_PLAY: {     // Play / pause
             if (clock_state == Setup || clock_state == Pause) {
                 clock_state = Playing;
+                if (active_player == Player1) {
+                    disp_set_P1_cb(true);
+                    disp_set_P2_cb(false);
+                }
+                else {
+                    disp_set_P1_cb(false);
+                    disp_set_P2_cb(true);
+                }
             } 
             else if (clock_state == Playing) {
                 clock_state = Pause;
+                disp_set_P1_cb(false);
+                disp_set_P2_cb(false);
             }
             else if (clock_state == Timeout) {
                 clock_state = Setup;
                 player1_time = set_time;
                 player2_time = set_time;
+                disp_set_P1_cb(false);
+                disp_set_P2_cb(false);
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
             break;
@@ -237,6 +255,8 @@ void btn_actions()
             clock_state = Setup;
             player1_time = set_time;
             player2_time = set_time;
+            disp_set_P1_cb(false);
+            disp_set_P2_cb(false);
             vTaskResume(refresh_diaplay_handle);    // Refresh display
             break;
         }
@@ -253,6 +273,8 @@ void btn_actions()
                 clock_state = Setup;
                 player1_time = set_time;
                 player2_time = set_time;
+                disp_set_P1_cb(false);
+                disp_set_P2_cb(false);
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
             break;
@@ -262,6 +284,8 @@ void btn_actions()
                 clock_state = Setup;
                 player1_time = set_time;
                 player2_time = set_time;
+                disp_set_P1_cb(false);
+                disp_set_P2_cb(false);
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
             else if (clock_state == Playing) {
@@ -269,9 +293,11 @@ void btn_actions()
                 disp_set_P1_cb(false);
                 disp_set_P2_cb(true);
             }
-            else if (clock_state == Setup) {
+            else if (clock_state == Setup || clock_state == Pause) {
                 active_player = Player2;
                 clock_state = Playing;
+                disp_set_P1_cb(false);
+                disp_set_P2_cb(true);
             }
             break;
         }
