@@ -23,10 +23,40 @@ void disp_init(void)
 {
     bsp_display_lock(0);
 
-    /*Create a window*/
-    lv_obj_t *win = lv_win_create(lv_scr_act(), 30);
-    assert(win);
-    lv_win_add_title(win, "Chess clock");
+    // /*Create a window*/
+    // lv_obj_t *win = lv_win_create(lv_scr_act(), 30);
+    // assert(win);
+    // lv_win_add_title(win, "Chess clock");
+
+    static lv_style_t style;
+    lv_style_init(&style);
+    lv_style_set_border_width(&style, 1);
+    lv_style_set_border_color(&style, lv_palette_main(LV_PALETTE_BLUE));
+    lv_style_set_pad_all(&style, 2);
+
+    lv_obj_t * spans = lv_spangroup_create(lv_scr_act());
+    lv_obj_set_width(spans, 200);
+    lv_obj_set_height(spans, 80);
+    // lv_obj_center(spans);
+    lv_obj_align(spans, LV_ALIGN_TOP_MID, 0, 5);
+    lv_obj_add_style(spans, &style, 0);
+
+    lv_spangroup_set_align(spans, LV_TEXT_ALIGN_CENTER);
+    lv_spangroup_set_overflow(spans, LV_SPAN_OVERFLOW_CLIP);
+    lv_spangroup_set_indent(spans, 20);
+    lv_spangroup_set_mode(spans, LV_SPAN_MODE_BREAK);
+
+    lv_span_t * span = lv_spangroup_new_span(spans);
+
+    span = lv_spangroup_new_span(spans);
+    lv_span_set_text_static(span, "Chess clock");
+#if LV_FONT_MONTSERRAT_24
+    lv_style_set_text_font(&span->style,  &lv_font_montserrat_24);
+#endif
+    // lv_style_set_text_color(&span->style, lv_palette_main(LV_PALETTE_GREEN));
+
+    lv_spangroup_refr_mode(spans);
+
 
     static lv_obj_t *clk1_name = NULL;
     static lv_obj_t *clk2_name = NULL;
