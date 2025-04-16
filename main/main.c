@@ -16,7 +16,7 @@
 #include "es8311.h"
 #include "led_strip.h"
 #include "lvgl.h"
-#include "disp_example.h"
+#include "disp.h"
 
 /* Buffer for reading/writing to I2S driver. Same length as SPIFFS buffer and I2S buffer, for optimal read/write performance.
    Recording audio data path:
