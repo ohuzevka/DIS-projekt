@@ -16,23 +16,6 @@ void disp_init(void);
 void disp_set_clock1(unsigned int max_time, unsigned int P1_sec);
 void disp_set_clock2(unsigned int max_time, unsigned int P2_sec);
 
-/**
- * @brief Example: Set volume on arc widget
- *
- * @param[in] volume Volume to be set [0-100].
- */
-void disp_set_volume(int volume);
+void disp_set_P1_cb(bool set);
 
-/**
- * @brief Example: Set state of Playing checkbox
- *
- * @param[in] set Checkbox state (on/off)
- */
-void disp_set_playing(bool set);
-
-/**
- * @brief Example: Set state of Recording checkbox
- *
- * @param[in] set Checkbox state (on/off)
- */
-void disp_set_recording(bool set);
+void disp_set_P2_cb(bool set);

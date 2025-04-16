@@ -8,15 +8,15 @@
 #include "lvgl.h"
 #include "bsp/esp-bsp.h"
 
-static lv_obj_t *recording_checkbox = NULL;
-static lv_obj_t *playing_checkbox = NULL;
-static lv_obj_t *volume_arc = NULL;
+static lv_obj_t *P1_checkbox = NULL;
+static lv_obj_t *P2_checkbox = NULL;
+// static lv_obj_t *volume_arc = NULL;
 static lv_obj_t *clk1_bar = NULL;
 static lv_obj_t *clk2_bar = NULL;
 static lv_obj_t *clk1_label = NULL;
 static lv_obj_t *clk2_label = NULL;
-static lv_obj_t *P1_led = NULL;
-static lv_obj_t *P2_led = NULL;
+// static lv_obj_t *P1_led = NULL;
+// static lv_obj_t *P2_led = NULL;
 
 
 void disp_init(void)
@@ -43,9 +43,9 @@ void disp_init(void)
     lv_label_set_text(clk1_label, "01 : 00");
     lv_obj_align_to(clk1_label, clk1_bar, LV_ALIGN_OUT_TOP_MID, 0, -5);
     
-    clk1_name = lv_label_create(lv_scr_act());
-    lv_label_set_text(clk1_name, "Player 1");
-    lv_obj_align_to(clk1_name, clk1_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
+    // clk1_name = lv_label_create(lv_scr_act());
+    // lv_label_set_text(clk1_name, "Player 1");
+    // lv_obj_align_to(clk1_name, clk1_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
 
     // Player 2 clock
     clk2_bar = lv_bar_create(lv_scr_act());
@@ -58,28 +58,28 @@ void disp_init(void)
     lv_label_set_text(clk2_label, "01 : 00");
     lv_obj_align_to(clk2_label, clk2_bar, LV_ALIGN_OUT_TOP_MID, 0, -5);
 
-    clk2_name = lv_label_create(lv_scr_act());
-    lv_label_set_text(clk2_name, "Player 2");
-    lv_obj_align_to(clk2_name, clk2_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
+    // clk2_name = lv_label_create(lv_scr_act());
+    // lv_label_set_text(clk2_name, "Player 2");
+    // lv_obj_align_to(clk2_name, clk2_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
 
     // buttons label
     lv_obj_t * buttons_label = lv_label_create(lv_scr_act());
     lv_label_set_text(buttons_label, "< P1 |  -  | Reset | Pause |  +  | P2 >");
     lv_obj_align(buttons_label, LV_ALIGN_BOTTOM_MID, 0, -5);
 
-    // Player1 led
-    lv_obj_t * P1_led  = lv_led_create(lv_scr_act());
-    lv_obj_align(P1_led, LV_ALIGN_BOTTOM_MID, -100, -30);
-    lv_led_set_brightness(P1_led, LV_LED_BRIGHT_MAX);
-    lv_led_set_color(P1_led, lv_palette_main(LV_PALETTE_RED));
-    lv_led_off(P1_led);
+    // // Player1 led
+    // lv_obj_t * P1_led  = lv_led_create(lv_scr_act());
+    // lv_obj_align(P1_led, LV_ALIGN_BOTTOM_MID, -100, -30);
+    // lv_led_set_brightness(P1_led, LV_LED_BRIGHT_MAX);
+    // lv_led_set_color(P1_led, lv_palette_main(LV_PALETTE_RED));
+    // lv_led_off(P1_led);
 
-    // Player2 led
-    lv_obj_t * P2_led  = lv_led_create(lv_scr_act());
-    lv_obj_align(P2_led, LV_ALIGN_BOTTOM_MID, 100, -30);
-    lv_led_set_brightness(P2_led, LV_LED_BRIGHT_MAX);
-    lv_led_set_color(P2_led, lv_palette_main(LV_PALETTE_BLUE));
-    lv_led_off(P2_led);
+    // // Player2 led
+    // lv_obj_t * P2_led  = lv_led_create(lv_scr_act());
+    // lv_obj_align(P2_led, LV_ALIGN_BOTTOM_MID, 100, -30);
+    // lv_led_set_brightness(P2_led, LV_LED_BRIGHT_MAX);
+    // lv_led_set_color(P2_led, lv_palette_main(LV_PALETTE_BLUE));
+    // lv_led_off(P2_led);
 
 
     // /* Volume arc */
@@ -93,13 +93,15 @@ void disp_init(void)
     // lv_label_set_text_static(volume_label, "Volume");
     // lv_obj_set_align(volume_label, LV_ALIGN_BOTTOM_MID);
 
-    // /* Checkboxes */
-    // recording_checkbox = lv_checkbox_create(win);
-    // assert(recording_checkbox);
-    // lv_checkbox_set_text_static(recording_checkbox, "Recording");
-    // playing_checkbox = lv_checkbox_create(win);
-    // assert(playing_checkbox);
-    // lv_checkbox_set_text_static(playing_checkbox, "Playing");
+    /* Checkboxes */
+    P1_checkbox = lv_checkbox_create(lv_scr_act());
+    lv_checkbox_set_text_static(P1_checkbox, "Player 1");
+    lv_obj_align_to(P1_checkbox, clk1_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
+
+    P2_checkbox = lv_checkbox_create(lv_scr_act());
+    assert(P2_checkbox);
+    lv_checkbox_set_text_static(P2_checkbox, "Player 2");
+    lv_obj_align_to(P2_checkbox, clk2_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
 
     bsp_display_unlock();
 }
@@ -144,26 +146,24 @@ void disp_set_clock2(unsigned int max_time, unsigned int P2_sec)
 //     bsp_display_unlock();
 // }
 
-// void disp_set_playing(bool set)
-// {
-//     assert(playing_checkbox);
-//     bsp_display_lock(0);
-//     if (set) {
-//         lv_obj_add_state(playing_checkbox, LV_STATE_CHECKED);
-//     } else {
-//         lv_obj_clear_state(playing_checkbox, LV_STATE_CHECKED);
-//     }
-//     bsp_display_unlock();
-// }
+void disp_set_P1_cb(bool set)
+{
+    bsp_display_lock(0);
+    if (set) {
+        lv_obj_add_state(P1_checkbox, LV_STATE_CHECKED);
+    } else {
+        lv_obj_clear_state(P1_checkbox, LV_STATE_CHECKED);
+    }
+    bsp_display_unlock();
+}
 
-// void disp_set_recording(bool set)
-// {
-//     assert(recording_checkbox);
-//     bsp_display_lock(0);
-//     if (set) {
-//         lv_obj_add_state(recording_checkbox, LV_STATE_CHECKED);
-//     } else {
-//         lv_obj_clear_state(recording_checkbox, LV_STATE_CHECKED);
-//     }
-//     bsp_display_unlock();
-// }
+void disp_set_P2_cb(bool set)
+{
+    bsp_display_lock(0);
+    if (set) {
+        lv_obj_add_state(P2_checkbox, LV_STATE_CHECKED);
+    } else {
+        lv_obj_clear_state(P2_checkbox, LV_STATE_CHECKED);
+    }
+    bsp_display_unlock();
+}

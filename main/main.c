@@ -194,6 +194,8 @@ void btn_actions()
             }
             else if (clock_state == Playing) {
                 active_player = Player1;
+                disp_set_P1_cb(true);
+                disp_set_P2_cb(false);
             }
             else if (clock_state == Setup) {
                 active_player = Player1;
@@ -264,6 +266,8 @@ void btn_actions()
             }
             else if (clock_state == Playing) {
                 active_player = Player2;
+                disp_set_P1_cb(false);
+                disp_set_P2_cb(true);
             }
             else if (clock_state == Setup) {
                 active_player = Player2;
