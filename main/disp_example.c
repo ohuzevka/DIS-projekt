@@ -15,6 +15,8 @@ static lv_obj_t *clk1_bar = NULL;
 static lv_obj_t *clk2_bar = NULL;
 static lv_obj_t *clk1_label = NULL;
 static lv_obj_t *clk2_label = NULL;
+static lv_obj_t *P1_led = NULL;
+static lv_obj_t *P2_led = NULL;
 
 
 void disp_init(void)
@@ -64,6 +66,20 @@ void disp_init(void)
     lv_obj_t * buttons_label = lv_label_create(lv_scr_act());
     lv_label_set_text(buttons_label, "< P1 |  -  | Reset | Pause |  +  | P2 >");
     lv_obj_align(buttons_label, LV_ALIGN_BOTTOM_MID, 0, -5);
+
+    // Player1 led
+    lv_obj_t * P1_led  = lv_led_create(lv_scr_act());
+    lv_obj_align(P1_led, LV_ALIGN_BOTTOM_MID, -100, -30);
+    lv_led_set_brightness(P1_led, LV_LED_BRIGHT_MAX);
+    lv_led_set_color(P1_led, lv_palette_main(LV_PALETTE_RED));
+    lv_led_off(P1_led);
+
+    // Player2 led
+    lv_obj_t * P2_led  = lv_led_create(lv_scr_act());
+    lv_obj_align(P2_led, LV_ALIGN_BOTTOM_MID, 100, -30);
+    lv_led_set_brightness(P2_led, LV_LED_BRIGHT_MAX);
+    lv_led_set_color(P2_led, lv_palette_main(LV_PALETTE_BLUE));
+    lv_led_off(P2_led);
 
 
     // /* Volume arc */
@@ -120,34 +136,34 @@ void disp_set_clock2(unsigned int max_time, unsigned int P2_sec)
     bsp_display_unlock();
 }
 
-void disp_set_volume(int volume)
-{
-    assert(volume_arc);
-    bsp_display_lock(0);
-    lv_arc_set_value(volume_arc, volume);
-    bsp_display_unlock();
-}
+// void disp_set_volume(int volume)
+// {
+//     assert(volume_arc);
+//     bsp_display_lock(0);
+//     lv_arc_set_value(volume_arc, volume);
+//     bsp_display_unlock();
+// }
 
-void disp_set_playing(bool set)
-{
-    assert(playing_checkbox);
-    bsp_display_lock(0);
-    if (set) {
-        lv_obj_add_state(playing_checkbox, LV_STATE_CHECKED);
-    } else {
-        lv_obj_clear_state(playing_checkbox, LV_STATE_CHECKED);
-    }
-    bsp_display_unlock();
-}
+// void disp_set_playing(bool set)
+// {
+//     assert(playing_checkbox);
+//     bsp_display_lock(0);
+//     if (set) {
+//         lv_obj_add_state(playing_checkbox, LV_STATE_CHECKED);
+//     } else {
+//         lv_obj_clear_state(playing_checkbox, LV_STATE_CHECKED);
+//     }
+//     bsp_display_unlock();
+// }
 
-void disp_set_recording(bool set)
-{
-    assert(recording_checkbox);
-    bsp_display_lock(0);
-    if (set) {
-        lv_obj_add_state(recording_checkbox, LV_STATE_CHECKED);
-    } else {
-        lv_obj_clear_state(recording_checkbox, LV_STATE_CHECKED);
-    }
-    bsp_display_unlock();
-}
+// void disp_set_recording(bool set)
+// {
+//     assert(recording_checkbox);
+//     bsp_display_lock(0);
+//     if (set) {
+//         lv_obj_add_state(recording_checkbox, LV_STATE_CHECKED);
+//     } else {
+//         lv_obj_clear_state(recording_checkbox, LV_STATE_CHECKED);
+//     }
+//     bsp_display_unlock();
+// }
