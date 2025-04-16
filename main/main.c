@@ -175,6 +175,27 @@ void play_audio() {
     }
 }
 
+void update_cb_led() {
+    if (clock_state == Playing) {
+        if (active_player == Player1) {
+            led_strip_set_pixel(rgb_led, 0, 100, 0, 0);
+            disp_set_P1_cb(true);
+            disp_set_P2_cb(false);
+        }
+        else {
+            led_strip_set_pixel(rgb_led, 0, 0, 0, 100);
+            disp_set_P1_cb(false);
+            disp_set_P2_cb(true);
+        }
+    }
+    else {
+        led_strip_set_pixel(rgb_led, 0, 0, 0, 0);
+        disp_set_P1_cb(false);
+        disp_set_P2_cb(false);
+    }
+    led_strip_refresh(rgb_led);
+}
+
 void btn_actions() 
 {   
     while (1) {
@@ -190,20 +211,17 @@ void btn_actions()
                 clock_state = Setup;
                 player1_time = set_time;
                 player2_time = set_time;
-                disp_set_P1_cb(false);
-                disp_set_P2_cb(false);
+                update_cb_led();
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
             else if (clock_state == Playing) {
                 active_player = Player1;
-                disp_set_P1_cb(true);
-                disp_set_P2_cb(false);
+                update_cb_led();
             }
             else if (clock_state == Setup || clock_state == Pause) {
                 active_player = Player1;
                 clock_state = Playing;
-                disp_set_P1_cb(true);
-                disp_set_P2_cb(false);
+                update_cb_led();
             }
             break;
         }
@@ -218,8 +236,7 @@ void btn_actions()
                 clock_state = Setup;
                 player1_time = set_time;
                 player2_time = set_time;
-                disp_set_P1_cb(false);
-                disp_set_P2_cb(false);
+                update_cb_led();
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
             break;
@@ -228,25 +245,21 @@ void btn_actions()
             if (clock_state == Setup || clock_state == Pause) {
                 clock_state = Playing;
                 if (active_player == Player1) {
-                    disp_set_P1_cb(true);
-                    disp_set_P2_cb(false);
+                    update_cb_led();
                 }
                 else {
-                    disp_set_P1_cb(false);
-                    disp_set_P2_cb(true);
+                    update_cb_led();
                 }
             } 
             else if (clock_state == Playing) {
                 clock_state = Pause;
-                disp_set_P1_cb(false);
-                disp_set_P2_cb(false);
+                update_cb_led();
             }
             else if (clock_state == Timeout) {
                 clock_state = Setup;
                 player1_time = set_time;
                 player2_time = set_time;
-                disp_set_P1_cb(false);
-                disp_set_P2_cb(false);
+                update_cb_led();
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
             break;
@@ -255,8 +268,7 @@ void btn_actions()
             clock_state = Setup;
             player1_time = set_time;
             player2_time = set_time;
-            disp_set_P1_cb(false);
-            disp_set_P2_cb(false);
+            update_cb_led();
             vTaskResume(refresh_diaplay_handle);    // Refresh display
             break;
         }
@@ -273,8 +285,7 @@ void btn_actions()
                 clock_state = Setup;
                 player1_time = set_time;
                 player2_time = set_time;
-                disp_set_P1_cb(false);
-                disp_set_P2_cb(false);
+                update_cb_led();
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
             break;
@@ -284,20 +295,17 @@ void btn_actions()
                 clock_state = Setup;
                 player1_time = set_time;
                 player2_time = set_time;
-                disp_set_P1_cb(false);
-                disp_set_P2_cb(false);
+                update_cb_led();
                 vTaskResume(refresh_diaplay_handle);    // Refresh display
             }
             else if (clock_state == Playing) {
                 active_player = Player2;
-                disp_set_P1_cb(false);
-                disp_set_P2_cb(true);
+                update_cb_led();
             }
             else if (clock_state == Setup || clock_state == Pause) {
                 active_player = Player2;
                 clock_state = Playing;
-                disp_set_P1_cb(false);
-                disp_set_P2_cb(true);
+                update_cb_led();
             }
             break;
         }
@@ -345,25 +353,6 @@ void refresh_display()
     }
 }
 
-void led() {
-    while (1) {
-        vTaskDelay(pdMS_TO_TICKS(100));
-
-        if (clock_state == Playing) {
-            if (active_player == Player1) {
-                led_strip_set_pixel(rgb_led, 0, 100, 0, 0);
-            }
-            else {
-                led_strip_set_pixel(rgb_led, 0, 0, 0, 100);
-            }
-        }
-        else {
-            led_strip_set_pixel(rgb_led, 0, 0, 0, 0);
-        }
-        led_strip_refresh(rgb_led);
-    }
-}
-
 
 void app_main(void)
 {
@@ -394,7 +383,7 @@ void app_main(void)
     xTaskCreate(refresh_display, "refresh display", 4096, NULL, 7, &refresh_diaplay_handle);
     xTaskCreate(play_audio, "play_audio", 4096, NULL, 7, &play_audio_handle);
     xTaskCreate(btn_actions, "btn_actions", 4096, NULL, 6, NULL);
-    xTaskCreate(led, "led", 4096, NULL, 6, NULL);
+    // xTaskCreate(led, "led", 4096, NULL, 6, NULL);
 
     /* Init audio buttons */
     for (int i = 0; i < BSP_BUTTON_NUM; i++) {
