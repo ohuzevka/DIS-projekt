@@ -88,8 +88,8 @@ void disp_init(void)
 
     // Player 1 clock
     clk1_bar = lv_bar_create(lv_scr_act());
-    lv_obj_set_size(clk1_bar, 200, 20);
-    lv_obj_align(clk1_bar, LV_ALIGN_CENTER, 0, -50);
+    lv_obj_set_size(clk1_bar, 50, 170);
+    lv_obj_align(clk1_bar, LV_ALIGN_CENTER, -60, -30);
     lv_bar_set_range(clk1_bar, 0, 60);
     lv_bar_set_value(clk1_bar, 60, LV_ANIM_OFF);
 
@@ -100,8 +100,8 @@ void disp_init(void)
 
     // Player 2 clock
     clk2_bar = lv_bar_create(lv_scr_act());
-    lv_obj_set_size(clk2_bar, 200, 20);
-    lv_obj_align(clk2_bar, LV_ALIGN_CENTER, 0, 50);
+    lv_obj_set_size(clk2_bar, 50, 170);
+    lv_obj_align(clk2_bar, LV_ALIGN_CENTER, 60, -30);
     lv_bar_set_range(clk2_bar, 0, 60);
     lv_bar_set_value(clk2_bar, 60, LV_ANIM_OFF);
 
