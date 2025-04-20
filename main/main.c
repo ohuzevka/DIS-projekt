@@ -178,12 +178,12 @@ void play_audio() {
 void update_cb_led() {
     if (clock_state == Playing) {
         if (active_player == Player1) {
-            led_strip_set_pixel(rgb_led, 0, 20, 0, 0);
+            led_strip_set_pixel(rgb_led, 0, 0, 0, 15);
             disp_set_P1_cb(true);
             disp_set_P2_cb(false);
         }
         else {
-            led_strip_set_pixel(rgb_led, 0, 0, 0, 20);
+            led_strip_set_pixel(rgb_led, 0, 15, 0, 0);
             disp_set_P1_cb(false);
             disp_set_P2_cb(true);
         }

@@ -8,8 +8,6 @@
 #include "lvgl.h"
 #include "bsp/esp-bsp.h"
 
-// static lv_obj_t *P1_checkbox = NULL;
-// static lv_obj_t *P2_checkbox = NULL;
 static lv_obj_t *clk1_bar = NULL;
 static lv_obj_t *clk2_bar = NULL;
 static lv_obj_t *clk1_time_spangroup = NULL;
@@ -44,12 +42,12 @@ void disp_init(void)
     lv_style_init(&clk1_border_style);
     lv_style_set_border_width(&clk1_border_style, 2);
     lv_style_set_radius(&clk1_border_style, 10);
-    lv_style_set_border_color(&clk1_border_style, lv_palette_lighten(LV_PALETTE_RED, 4));
+    lv_style_set_border_color(&clk1_border_style, lv_palette_lighten(LV_PALETTE_BLUE, 4));
     // lv_style_set_pad_all(&clk1_border_style, 2);
 
     clk1_time_spangroup = lv_spangroup_create(lv_scr_act());
     lv_obj_set_size(clk1_time_spangroup, 100, 30);
-    lv_obj_align(clk1_time_spangroup, LV_ALIGN_BOTTOM_LEFT, 10, -30);
+    lv_obj_align(clk1_time_spangroup, LV_ALIGN_BOTTOM_LEFT, 10, -35);
 
     lv_obj_add_style(clk1_time_spangroup, &clk1_border_style, 0);
     lv_spangroup_set_align(clk1_time_spangroup, LV_TEXT_ALIGN_CENTER);
@@ -65,12 +63,12 @@ void disp_init(void)
     lv_style_init(&clk2_border_style);
     lv_style_set_border_width(&clk2_border_style, 2);
     lv_style_set_radius(&clk2_border_style, 10);
-    lv_style_set_border_color(&clk2_border_style, lv_palette_lighten(LV_PALETTE_BLUE, 4));
+    lv_style_set_border_color(&clk2_border_style, lv_palette_lighten(LV_PALETTE_RED, 4));
     // lv_style_set_pad_all(&clk2_border_style, 2);
 
     clk2_time_spangroup = lv_spangroup_create(lv_scr_act());
     lv_obj_set_size(clk2_time_spangroup, 100, 30);
-    lv_obj_align(clk2_time_spangroup, LV_ALIGN_BOTTOM_RIGHT, -10, -30);
+    lv_obj_align(clk2_time_spangroup, LV_ALIGN_BOTTOM_RIGHT, -10, -35);
 
     lv_obj_add_style(clk2_time_spangroup, &clk2_border_style, 0);
     lv_spangroup_set_align(clk2_time_spangroup, LV_TEXT_ALIGN_CENTER);
@@ -87,12 +85,12 @@ void disp_init(void)
     static lv_style_t clk1_style_bg;
     lv_style_init(&clk1_style_bg);
     lv_style_set_radius(&clk1_style_bg, 10);
-    lv_style_set_bg_color(&clk1_style_bg, lv_palette_main(LV_PALETTE_RED));
+    lv_style_set_bg_color(&clk1_style_bg, lv_palette_main(LV_PALETTE_BLUE));
 
     static lv_style_t clk1_style_indic;
     lv_style_init(&clk1_style_indic);
     lv_style_set_radius(&clk1_style_indic, 10);
-    lv_style_set_bg_color(&clk1_style_indic, lv_palette_main(LV_PALETTE_RED));
+    lv_style_set_bg_color(&clk1_style_indic, lv_palette_main(LV_PALETTE_BLUE));
     
     clk1_bar = lv_bar_create(lv_scr_act());
     lv_obj_set_size(clk1_bar, 50, 200);
@@ -106,12 +104,12 @@ void disp_init(void)
     static lv_style_t clk2_style_bg;
     lv_style_init(&clk2_style_bg);
     lv_style_set_radius(&clk2_style_bg, 10);
-    lv_style_set_bg_color(&clk2_style_bg, lv_palette_main(LV_PALETTE_BLUE));
+    lv_style_set_bg_color(&clk2_style_bg, lv_palette_main(LV_PALETTE_RED));
 
     static lv_style_t clk2_style_indic;
     lv_style_init(&clk2_style_indic);
     lv_style_set_radius(&clk2_style_indic, 10);
-    lv_style_set_bg_color(&clk2_style_indic, lv_palette_main(LV_PALETTE_BLUE));
+    lv_style_set_bg_color(&clk2_style_indic, lv_palette_main(LV_PALETTE_RED));
 
     clk2_bar = lv_bar_create(lv_scr_act());
     lv_obj_set_size(clk2_bar, 50, 200);
@@ -124,19 +122,10 @@ void disp_init(void)
 
     // buttons label
     lv_obj_t * buttons_label = lv_label_create(lv_scr_act());
-    lv_label_set_text(buttons_label, "< P1 |  -  | Reset | Pause |  +  | P2 >");
+    lv_label_set_recolor(buttons_label, true); 
+    lv_label_set_text(buttons_label, "#2196f3 Blue# |  -  | Reset | Pause |  +  | #f44336 Red#");
     lv_obj_align(buttons_label, LV_ALIGN_BOTTOM_MID, 0, -5);
 
-    /* Checkboxes */
-    // P1_checkbox = lv_checkbox_create(lv_scr_act());
-    // lv_checkbox_set_text_static(P1_checkbox, "Player 1");
-    // // lv_obj_add_style(P1_checkbox, &style_indic, LV_PART_MAIN);
-    // lv_obj_align_to(P1_checkbox, clk1_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
-
-    // P2_checkbox = lv_checkbox_create(lv_scr_act());
-    // assert(P2_checkbox);
-    // lv_checkbox_set_text_static(P2_checkbox, "Player 2");
-    // lv_obj_align_to(P2_checkbox, clk2_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
 
     bsp_display_unlock();
 }
@@ -179,9 +168,9 @@ void disp_set_P1_cb(bool set)
 {
     bsp_display_lock(0);
     if (set) {
-        lv_style_set_border_color(&clk1_border_style, lv_palette_main(LV_PALETTE_RED));
+        lv_style_set_border_color(&clk1_border_style, lv_palette_main(LV_PALETTE_BLUE));
     } else {
-        lv_style_set_border_color(&clk1_border_style, lv_palette_lighten(LV_PALETTE_RED, 4));
+        lv_style_set_border_color(&clk1_border_style, lv_palette_lighten(LV_PALETTE_BLUE, 4));
     }
     lv_spangroup_refr_mode(clk1_time_spangroup);
     bsp_display_unlock();
@@ -191,9 +180,9 @@ void disp_set_P2_cb(bool set)
 {
     bsp_display_lock(0);
     if (set) {
-        lv_style_set_border_color(&clk2_border_style, lv_palette_main(LV_PALETTE_BLUE));
+        lv_style_set_border_color(&clk2_border_style, lv_palette_main(LV_PALETTE_RED));
     } else {
-        lv_style_set_border_color(&clk2_border_style, lv_palette_lighten(LV_PALETTE_BLUE, 4));
+        lv_style_set_border_color(&clk2_border_style, lv_palette_lighten(LV_PALETTE_RED, 4));
     }
     lv_spangroup_refr_mode(clk2_time_spangroup);
     bsp_display_unlock();
