@@ -34,13 +34,13 @@ void disp_init(void)
     // Chess clock sign
     static lv_style_t style;
     lv_style_init(&style);
-    lv_style_set_border_width(&style, 1);
-    lv_style_set_border_color(&style, lv_palette_main(LV_PALETTE_BLUE));
+    // lv_style_set_border_width(&style, 1);
+    // lv_style_set_border_color(&style, lv_palette_main(LV_PALETTE_BLUE));
     lv_style_set_pad_all(&style, 2);
 
     lv_obj_t * spans = lv_spangroup_create(lv_scr_act());
     lv_obj_set_size(spans, 200, 30);
-    lv_obj_align(spans, LV_ALIGN_TOP_MID, 0, 10);
+    lv_obj_align(spans, LV_ALIGN_TOP_MID, 0, 2);
     lv_obj_add_style(spans, &style, 0);
 
     lv_spangroup_set_align(spans, LV_TEXT_ALIGN_CENTER);
@@ -52,14 +52,15 @@ void disp_init(void)
     span = lv_spangroup_new_span(spans);
     lv_span_set_text_static(span, "Chess clock");
     lv_style_set_text_font(&span->style,  &lv_font_montserrat_24);
+    // lv_style_set_text_color(&span->style, lv_color_white());
 
     lv_spangroup_refr_mode(spans);
 
     // Clock 1 Time
     clk1_time_spangroup = lv_spangroup_create(lv_scr_act());
     lv_obj_set_size(clk1_time_spangroup, 100, 30);
-    lv_obj_align(clk1_time_spangroup, LV_ALIGN_BOTTOM_LEFT, 10, -30);
-    lv_obj_add_style(clk1_time_spangroup, &style, 0);
+    lv_obj_align(clk1_time_spangroup, LV_ALIGN_BOTTOM_LEFT, 10, -25);
+    // lv_obj_add_style(clk1_time_spangroup, &style, 0);
 
     lv_spangroup_set_align(clk1_time_spangroup, LV_TEXT_ALIGN_CENTER);
     lv_spangroup_set_overflow(clk1_time_spangroup, LV_SPAN_OVERFLOW_CLIP);
@@ -73,8 +74,8 @@ void disp_init(void)
     // Clock 2 Time
     clk2_time_spangroup = lv_spangroup_create(lv_scr_act());
     lv_obj_set_size(clk2_time_spangroup, 100, 30);
-    lv_obj_align(clk2_time_spangroup, LV_ALIGN_BOTTOM_RIGHT, -10, -30);
-    lv_obj_add_style(clk2_time_spangroup, &style, 0);
+    lv_obj_align(clk2_time_spangroup, LV_ALIGN_BOTTOM_RIGHT, -10, -25);
+    // lv_obj_add_style(clk2_time_spangroup, &style, 0);
 
     lv_spangroup_set_align(clk2_time_spangroup, LV_TEXT_ALIGN_CENTER);
     lv_spangroup_set_overflow(clk2_time_spangroup, LV_SPAN_OVERFLOW_CLIP);
@@ -88,8 +89,8 @@ void disp_init(void)
 
     // Player 1 clock
     clk1_bar = lv_bar_create(lv_scr_act());
-    lv_obj_set_size(clk1_bar, 50, 170);
-    lv_obj_align(clk1_bar, LV_ALIGN_CENTER, -60, -30);
+    lv_obj_set_size(clk1_bar, 50, 200);
+    lv_obj_align(clk1_bar, LV_ALIGN_CENTER, -60, -25);
     lv_bar_set_range(clk1_bar, 0, 60);
     lv_bar_set_value(clk1_bar, 60, LV_ANIM_OFF);
 
@@ -100,8 +101,8 @@ void disp_init(void)
 
     // Player 2 clock
     clk2_bar = lv_bar_create(lv_scr_act());
-    lv_obj_set_size(clk2_bar, 50, 170);
-    lv_obj_align(clk2_bar, LV_ALIGN_CENTER, 60, -30);
+    lv_obj_set_size(clk2_bar, 50, 200);
+    lv_obj_align(clk2_bar, LV_ALIGN_CENTER, 60, -25);
     lv_bar_set_range(clk2_bar, 0, 60);
     lv_bar_set_value(clk2_bar, 60, LV_ANIM_OFF);
 
