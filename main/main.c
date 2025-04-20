@@ -24,7 +24,7 @@
    Vice versa for playback. */
 #define BUFFER_SIZE     (1024)
 #define SAMPLE_RATE     (22050)
-#define DEFAULT_VOLUME  (50)
+#define DEFAULT_VOLUME  (60)
 /* The recording will be RECORDING_LENGTH * BUFFER_SIZE long (in bytes)
    With sampling frequency 22050 Hz and 16bit mono resolution it equals to ~3.715 seconds */
 // #define RECORDING_LENGTH (160)
@@ -178,12 +178,12 @@ void play_audio() {
 void update_cb_led() {
     if (clock_state == Playing) {
         if (active_player == Player1) {
-            led_strip_set_pixel(rgb_led, 0, 100, 0, 0);
+            led_strip_set_pixel(rgb_led, 0, 20, 0, 0);
             disp_set_P1_cb(true);
             disp_set_P2_cb(false);
         }
         else {
-            led_strip_set_pixel(rgb_led, 0, 0, 0, 100);
+            led_strip_set_pixel(rgb_led, 0, 0, 0, 20);
             disp_set_P1_cb(false);
             disp_set_P2_cb(true);
         }

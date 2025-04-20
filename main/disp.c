@@ -68,17 +68,35 @@ void disp_init(void)
     lv_style_set_text_font(&clk2_time_span->style,  &lv_font_montserrat_24);
     lv_spangroup_refr_mode(clk2_time_spangroup);
 
+    static lv_style_t style_bg;
+    lv_style_init(&style_bg);
+    lv_style_set_radius(&style_bg, 10);
 
+    
     // Player 1 bar
+    static lv_style_t clk1_style_indic;
+    lv_style_init(&clk1_style_indic);
+    lv_style_set_radius(&clk1_style_indic, 10);
+    lv_style_set_bg_color(&clk1_style_indic, lv_palette_main(LV_PALETTE_RED));
+    
     clk1_bar = lv_bar_create(lv_scr_act());
     lv_obj_set_size(clk1_bar, 50, 200);
+    lv_obj_add_style(clk1_bar, &style_bg, 0);
+    lv_obj_add_style(clk1_bar, &clk1_style_indic, LV_PART_INDICATOR);
     lv_obj_align(clk1_bar, LV_ALIGN_CENTER, -60, -25);
     lv_bar_set_range(clk1_bar, 0, 60);
     lv_bar_set_value(clk1_bar, 60, LV_ANIM_OFF);
 
     // Player 2 bar
+    static lv_style_t clk2_style_indic;
+    lv_style_init(&clk2_style_indic);
+    lv_style_set_radius(&clk2_style_indic, 10);
+    lv_style_set_bg_color(&clk2_style_indic, lv_palette_main(LV_PALETTE_BLUE));
+
     clk2_bar = lv_bar_create(lv_scr_act());
     lv_obj_set_size(clk2_bar, 50, 200);
+    lv_obj_add_style(clk2_bar, &style_bg, 0);
+    lv_obj_add_style(clk2_bar, &clk2_style_indic, LV_PART_INDICATOR);
     lv_obj_align(clk2_bar, LV_ALIGN_CENTER, 60, -25);
     lv_bar_set_range(clk2_bar, 0, 60);
     lv_bar_set_value(clk2_bar, 60, LV_ANIM_OFF);
@@ -92,6 +110,7 @@ void disp_init(void)
     /* Checkboxes */
     P1_checkbox = lv_checkbox_create(lv_scr_act());
     lv_checkbox_set_text_static(P1_checkbox, "Player 1");
+    // lv_obj_add_style(P1_checkbox, &style_indic, LV_PART_MAIN);
     lv_obj_align_to(P1_checkbox, clk1_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
 
     P2_checkbox = lv_checkbox_create(lv_scr_act());
