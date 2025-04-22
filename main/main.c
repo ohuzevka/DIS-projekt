@@ -378,12 +378,10 @@ void app_main(void)
     audio_button_q = xQueueCreate(10, sizeof(uint8_t));
     assert (audio_button_q != NULL);
 
-    // clock tick executed every second
     xTaskCreate(clock_tick, "clock_tick", 4096, NULL, 1, NULL);
     xTaskCreate(refresh_display, "refresh display", 4096, NULL, 7, &refresh_diaplay_handle);
     xTaskCreate(play_audio, "play_audio", 4096, NULL, 7, &play_audio_handle);
     xTaskCreate(btn_actions, "btn_actions", 4096, NULL, 6, NULL);
-    // xTaskCreate(led, "led", 4096, NULL, 6, NULL);
 
     /* Init audio buttons */
     for (int i = 0; i < BSP_BUTTON_NUM; i++) {
@@ -396,5 +394,4 @@ void app_main(void)
     disp = bsp_display_start(); // Start LVGL and LCD driver
     bsp_display_rotate(disp, LV_DISP_ROT_90);
     disp_init();         // Create LVGL screen and widgets
-    // disp_set_volume(DEFAULT_VOLUME);
 }
